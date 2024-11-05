@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIT-SPORZZ - Products</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #111317;
+            --primary-color-light: #1f2125;
+            --primary-color-extra-light: #35373b;
+            --secondary-color: #f9ac54;
+            --secondary-color-dark: #d79447;
+            --text-light: #d1d5db;
+            --white: #ffffff;
+            --max-width: 1200px;
+        }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            background-color: var(--primary-color);
+        }
+
+        nav {
+            max-width: var(--max-width);
+            margin: auto;
+            padding: 2rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .nav__actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem; /* Adjust spacing between elements */
+        }
+
+        .cart-icon img {
+            width: 50px;
+            height: 50px;
+        }
+
+        /* Carousel Styles */
+        .carousel {
+            position: relative;
+            max-width: 100%;
+            margin: 1rem auto; /* Center carousel */
+            overflow: hidden;
+        }
+
+        .carousel img {
+            width: 100%;
+            height: 550px;
+            display: none; /* Hide all images by default */
+        }
+
+        .carousel img.active {
+            display: block; /* Show active image */
+        }
+
+        .carousel-buttons {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+
+        .carousel-button {
+            background-color: var(--secondary-color);
+            border: none;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .carousel-button:hover {
+            background-color: var(--secondary-color-dark);
+        }
+
+        .explore__grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Three items per row */
+            gap: 2rem;
+        }
+
+        .explore__card {
+            position: relative; /* Positioning context for absolute children */
+            padding: 1rem;
+            background-color: var(--primary-color-light);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            overflow: hidden; /* Ensures child elements are contained */
+            text-align: center; /* Center text */
+            height: fit-content;
+            width: 350px; /* Increased height for better visibility */
+        }
+
+        .explore__card img {
+            width: 100%;
+            height: 80%; /* Image takes 80% of the card height */
+            object-fit: cover; /* Maintain aspect ratio */
+            border-radius: 10px;
+        }
+
+        .badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: var(--secondary-color);
+            color: var(--white);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .explore__card h4 {
+            margin: 0.5rem 0;
+            color: var(--white);
+        }
+
+        .explore__card p {
+            margin: 0.5rem 0;
+            color: var(--text-light);
+        }
+
+        .price__btn {
+            color: var(--white);
+            background-color: var(--secondary-color);
+            border: none; /* Remove border */
+            border-radius: 5px;
+            padding: 0.5rem 1.5rem; /* Padding for a more button-like feel */
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 1.5rem; /* Space above the button */
+            display: inline-block; /* Makes button size fit content */
+            font-size: 1rem; /* Normal font size */
+        }
+
+        .price__btn:hover {
+            background-color: var(--secondary-color-dark);
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+        }
+
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+               /* Cart Modal Styles */
+               .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: var(--primary-color-light);
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+            color: var(--text-light);
+            border: 1px solid var(--primary-color-extra-light);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .modal-header h2 {
+            color: var(--white);
+        }
+
+        .close-button {
+            color: var(--text-light);
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-button:hover {
+            color: var(--white);
+        }
+
+        /* Cart Item Styles */
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background-color: var(--primary-color-light);
+            border-radius: 8px;
+            border: 1px solid var(--primary-color-extra-light);
+        }
+
+        .cart-item-details {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .cart-item-details img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .remove-item {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .remove-item:hover {
+            background-color: var(--secondary-color-dark);
+        }
+
+        /* Empty Cart Message */
+        #empty-cart-message {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav__logo">
+            <a href="/index.html"><img src="assets/mylogoRB.png" alt="logo" /></a>
+        </div>
+        <ul class="nav__links">
+            <li class="link"><a href="/Home.html">Home</a></li>
+            <li class="link"><a href="/product.html">Products</a></li>
+            <li class="link"><a href="/bmi.html">BMI Calculator</a></li>
+            <li class="link"><a href="/diet.html">Diet Plan</a></li>
+            <li class="link"><a href="/gallery.html">Gallery</a></li>
+        </ul>
+        <div class="nav__actions">
+            <a href="#" id="cart-button" class="cart-icon">
+                <img src="assets/cart-icon.png" alt="Cart" />
+            </a>
+            <button class="btn" id="login-button">Login</button>
+        </div>
+    </nav>
+
+    <!-- Carousel Component -->
+    <div class="carousel">
+        <img src="assets/coursel/360_F_350818949_lJTfzSTDr79e9Kn55PUVZjN19ct20uGc.jpg" alt="Carousel Image 1" class="active">
+        <img src="assets/coursel/360_F_584966026_0HU7OQdOUlrRse3qjtjiYayY1ePGGtSe.jpg" alt="Carousel Image 2">
+        <img src="assets/coursel/gradient-gym-sale-banner_23-2149658585.avif" alt="Carousel Image 3">
+        <div class="carousel-buttons">
+            <button class="carousel-button" id="prev-button">❮</button>
+            <button class="carousel-button" id="next-button">❯</button>
+        </div>
+    </div>
+
+    <div class="section__container">
+        <h1 class="section__header">Our Products</h1>
+        <p class="section__subheader">Explore our wide range of fitness products.</p>
+
+        <div class="explore__grid">
+            <div class="explore__card" data-product="Adjustable Dumbbells">
+                <img src="assets/products/IMG-20241104-WA0051.jpg" alt="Adjustable Dumbbells">
+                <div class="badge">New</div>
+                <h4>Adjustable Dumbbells</h4>
+                <p>Perfect for your home workouts.</p>
+                <button class="price__btn add-to-cart" 
+                    data-product="Adjustable Dumbbells" 
+                    data-price="99.99" 
+                    data-image="assets/products/IMG-20241104-WA0051.jpg">
+                    Add to Cart
+                </button>
+            </div>
+            
+            <div class="explore__card" data-product="Protein Powder">
+                <img src="assets/products/IMG-20241104-WA0050.jpg" alt="Protein Powder">
+                <div class="badge">New</div>
+                <h4>Protein Powder</h4>
+                <p>Enhance your workout recovery.</p>
+                <button class="price__btn add-to-cart" 
+                    data-product="Protein Powder" 
+                    data-price="29.99" 
+                    data-image="assets/products/IMG-20241104-WA0050.jpg">
+                    Add to Cart
+                </button>
+            </div>
+            
+            <div class="explore__card" data-product="Workout T-Shirt">
+                <img src="assets/products/IMG-20241104-WA0052.jpg" alt="Workout T-Shirt">
+                <div class="badge">Best Seller</div>
+                <h4>Workout T-Shirt</h4>
+                <p>Stay comfortable during your workouts.</p>
+                <button class="price__btn add-to-cart" 
+                    data-product="Workout T-Shirt" 
+                    data-price="19.99" 
+                    data-image="assets/products/IMG-20241104-WA0052.jpg">
+                    Add to Cart
+                </button>
+            </div>
+            
+            <div class="explore__card" data-product="Workout Shorts">
+                <img src="assets/products/IMG-20241104-WA0053.jpg" alt="Workout Shorts">
+                <div class="badge">Best Seller</div>
+                <h4>Workout Shorts</h4>
+                <p>Breathable and flexible for intense workouts.</p>
+                <button class="price__btn add-to-cart" 
+                    data-product="Workout Shorts" 
+                    data-price="24.99" 
+                    data-image="assets/products/IMG-20241104-WA0053.jpg">
+                    Add to Cart
+                </button>
+            </div>
+            
+            <div class="explore__card" data-product="Yoga Mat">
+                <img src="assets/products/IMG-20241104-WA0054.jpg" alt="Yoga Mat">
+                <div class="badge">Best Seller</div>
+                <h4>Yoga Mat</h4>
+                <p>Perfect for your stretching and yoga routine.</p>
+                <button class="price__btn add-to-cart" 
+                    data-product="Yoga Mat" 
+                    data-price="39.99" 
+                    data-image="assets/products/IMG-20241104-WA0054.jpg">
+                    Add to Cart
+                </button>
+            </div>
+            
+            <div class="explore__card" data-product="Resistance Bands">
+                <img src="assets/products/IMG-20241104-WA0055.jpg" alt="Resistance Bands">
+                <div class="badge">New</div>
+                <h4>Resistance Bands</h4>
+                <p>Boost your workout with adjustable resistance levels.</p>
+                <button class="price__btn add-to-cart" 
+                    data-product="Resistance Bands" 
+                    data-price="15.99" 
+                    data-image="assets/products/IMG-20241104-WA0055.jpg">
+                    Add to Cart
+                </button>
+            </div>
+            
+        </div>
+    </div>
+
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="close-modal">&times;</span>
+            <h2>Your Cart</h2>
+            <ul id="cart-items"></ul>
+            <p id="empty-cart-message" style="display: none;">Your cart is empty.</p>
+        </div>
+    </div>
+
+    <footer class="section__container footer__container">
+        <span class="bg__blur"></span>
+        <span class="bg__blur footer__blur"></span>
+        <div class="footer__col">
+          <div class="footer__logo"><img src="assets/logo.png" alt="logo" /></div>
+          <p>
+            Take the first step towards a healthier, stronger you with our
+            unbeatable pricing plans. Let's sweat, achieve, and conquer together!
+          </p>
+          <div class="footer__socials">
+            <a href="#"><i class="ri-facebook-fill"></i></a>
+            <a href="#"><i class="ri-instagram-line"></i></a>
+            <a href="#"><i class="ri-twitter-fill"></i></a>
+          </div>
+        </div>
+        <div class="footer__col">
+          <h4>Company</h4>
+          <a href="#">Business</a>
+          <a href="#">Franchise</a>
+          <a href="#">Partnership</a>
+          <a href="#">Network</a>
+        </div>
+        <div class="footer__col">
+          <h4>About Us</h4>
+          <a href="#">Blogs</a>
+          <a href="#">Security</a>
+          <a href="#">Careers</a>
+        </div>
+        <div class="footer__col">
+          <h4>Contact</h4>
+          <a href="#">Contact Us</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms & Conditions</a>
+          <a href="#">BMI Calculator</a>
+        </div>
+      </footer>
+      <div class="footer__bar">
+        Copyright © 2023 Web Design Mastery. All rights reserved.
+      </div>
+      <script>
+        // JavaScript for carousel functionality
+        let currentIndex = 0;
+        const images = document.querySelectorAll('.carousel img');
+        const totalImages = images.length;
+    
+        // Show the first image
+        images[currentIndex].classList.add('active');
+    
+        document.getElementById('next-button').addEventListener('click', () => {
+            images[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % totalImages; // Loop back to the first image
+            images[currentIndex].classList.add('active');
+        });
+    
+        document.getElementById('prev-button').addEventListener('click', () => {
+            images[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex - 1 + totalImages) % totalImages; // Loop back to the last image
+            images[currentIndex].classList.add('active');
+        });
+    
+        // Automatic carousel movement
+        setInterval(() => {
+            images[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % totalImages; // Loop back to the first image
+            images[currentIndex].classList.add('active');
+        }, 3000); // Change image every 3 seconds (3000 milliseconds)
+    
+        // Cart array to store items
+        const cart = [];
+        const cartModal = document.getElementById("cart-modal");
+        const cartItems = document.getElementById("cart-items");
+        const closeModal = document.getElementById("close-modal");
+        const emptyCartMessage = document.getElementById("empty-cart-message");
+    
+        // Add to Cart functionality
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', function() {
+                const productName = this.getAttribute('data-product');
+                const productPrice = this.getAttribute('data-price');
+                const productImage = this.getAttribute('data-image');
+                
+                // Ensure valid data is present before adding to cart
+                if (productName && productPrice && productImage) {
+                    const product = { name: productName, price: parseFloat(productPrice), image: productImage };
+                    addToCart(product);
+                } else {
+                    console.error('Missing product data');
+                }
+            });
+        });
+    
+        // Add product to cart
+        function addToCart(product) {
+            cart.push(product);
+            updateCart();
+        }
+    
+        // Remove item from cart
+        function removeFromCart(index) {
+            cart.splice(index, 1); // Remove the item at the specified index
+            updateCart();
+        }
+    
+        // Update Cart UI
+        function updateCart() {
+            cartItems.innerHTML = ""; // Clear existing items
+            if (cart.length === 0) {
+                emptyCartMessage.style.display = 'block';
+            } else {
+                emptyCartMessage.style.display = 'none';
+                cart.forEach((item, index) => {
+                    const li = document.createElement('li');
+                    li.classList.add('cart-item'); // Add a class for styling
+                    li.innerHTML = `
+                        <div class="cart-item-details">
+                            <img src="${item.image}" alt="${item.name}" width="50" height="50">
+                            <div>
+                                <strong>${item.name}</strong> - $${item.price.toFixed(2)}
+                            </div>
+                        </div>
+                        <button class="remove-item" onclick="removeFromCart(${index})">Remove</button>
+                    `;
+                    cartItems.appendChild(li);
+                });
+            }
+        }
+    
+        // Open Cart Modal
+        document.getElementById('cart-button').addEventListener('click', function() {
+            cartModal.style.display = 'block';
+            updateCart(); // Update the cart when opening the modal
+        });
+    
+        // Close Cart Modal
+        closeModal.addEventListener('click', function() {
+            cartModal.style.display = 'none';
+        });
+    
+        // Close modal when clicking outside of it
+        window.addEventListener('click', function(event) {
+            if (event.target === cartModal) {
+                cartModal.style.display = 'none';
+            }
+        });
+    </script>
+    
+</body>
+</html>

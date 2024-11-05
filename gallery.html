@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Gallery | Fitclub</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+        .gallery-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Default: 3 images per row */
+            gap: 15px; /* Space between images */
+            padding: 20px;
+        }
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect */
+            opacity: 0; /* Initially hidden */
+            transition: opacity 0.8s; /* Longer transition for fade-in */
+        }
+        .gallery-item.visible {
+            opacity: 1; /* Fade in */
+        }
+
+        /* Animations for different images */
+        .slide-in-left {
+            transform: translateX(-100%);
+            transition: transform 0.8s ease; /* Slower transition */
+        }
+        .slide-in-right {
+            transform: translateX(100%);
+            transition: transform 0.8s ease; /* Slower transition */
+        }
+        .slide-in-top {
+            transform: translateY(-100%);
+            transition: transform 0.8s ease; /* Slower transition */
+        }
+        .slide-in-bottom {
+            transform: translateY(100%);
+            transition: transform 0.8s ease; /* Slower transition */
+        }
+        .pop {
+            transform: scale(0);
+            transition: transform 0.6s ease; /* Slower pop effect */
+        }
+        .blur {
+            filter: blur(10px);
+            transition: filter 0.8s ease, opacity 0.8s ease; /* Slower blur transition */
+        }
+
+        .gallery-item.visible.slide-in-left {
+            transform: translateX(0);
+        }
+        .gallery-item.visible.slide-in-right {
+            transform: translateX(0);
+        }
+        .gallery-item.visible.slide-in-top {
+            transform: translateY(0);
+        }
+        .gallery-item.visible.slide-in-bottom {
+            transform: translateY(0);
+        }
+        .gallery-item.visible.pop {
+            transform: scale(1);
+        }
+        .gallery-item.visible.blur {
+            filter: blur(0);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 10px; /* Match border radius */
+        }
+        .gallery-item:hover {
+            transform: scale(1.09);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+        }
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        /* Specific row configurations */
+        .gallery-item:nth-of-type(1),
+        .gallery-item:nth-of-type(2),
+        .gallery-item:nth-of-type(3) {
+            grid-column: span 1; /* First row: 3 images */
+        }
+
+        .gallery-item:nth-of-type(4),
+        .gallery-item:nth-of-type(5) {
+            grid-column: span 1; /* Second row: 2 images */
+        }
+
+        .gallery-item:nth-of-type(6),
+        .gallery-item:nth-of-type(7),
+        .gallery-item:nth-of-type(8),
+        .gallery-item:nth-of-type(9) {
+            grid-column: span 1; /* Third row: 4 images */
+        }
+
+        .gallery-item:nth-of-type(10),
+        .gallery-item:nth-of-type(11),
+        .gallery-item:nth-of-type(12) {
+            grid-column: span 1; /* Fourth row: 3 images */
+        }
+
+        .gallery-item:nth-of-type(13),
+        .gallery-item:nth-of-type(14) {
+            grid-column: span 1; /* Fifth row: 2 images */
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="nav__logo">
+            <a href="/index.html"><img src="assets/mylogoRB.png" alt="logo" /></a>
+        </div>
+        <ul class="nav__links">
+            <li class="link"><a href="/index.html">Home</a></li>
+            <li class="link"><a href="#">Products</a></li>
+            <li class="link"><a href="/bmi.html">BMI Calculator</a></li>
+            <li class="link"><a href="#">About</a></li>
+            <li class="link"><a href="gallery.html">Gallery</a></li>
+        </ul>
+        <button class="btn">Login in</button>
+    </nav>
+
+    <section class="gallery-container">
+        <div class="gallery-item slide-in-left" onclick="openModal('assets/gallery/IMG-20241104-WA0032.jpg')">
+            <img src="assets/gallery/IMG-20241104-WA0032.jpg" alt="Image 1" />
+        </div>
+        <div class="gallery-item slide-in-right" onclick="openModal('assets/gallery/IMG-20241104-WA0033.jpg')">
+            <img src="assets/gallery/IMG-20241104-WA0033.jpg" alt="Image 2" />
+        </div>
+        <div class="gallery-item slide-in-top" onclick="openModal('assets/gallery/IMG-20241104-WA0034.jpg')">
+            <img src="assets/gallery/IMG-20241104-WA0034.jpg" alt="Image 3" />
+        </div>
+        <div class="gallery-item slide-in-bottom" onclick="openModal('assets/gallery/IMG-20241104-WA0035.jpg')">
+            <img src="assets/gallery/IMG-20241104-WA0035.jpg" alt="Image 4" />
+        </div>
+        <div class="gallery-item pop" onclick="openModal('assets/gallery/IMG-20241104-WA0036.jpg')">
+            <img src="assets/gallery/IMG-20241104-WA0036.jpg" alt="Image 5" />
+        </div>
+        <div class="gallery-item blur" onclick="openModal('assets/gallery/IMG-20241104-WA0037.jpg')">
+            <img src="assets/gallery/IMG-20241104-WA0037.jpg" alt="Image 6" />
+        </div>
+        <div class="gallery-item slide-in-left" onclick="openModal('assets/gallery/IMG-20241104-WA0038.jpg')">
+            <img src="assets/gallery/IMG-20241104-WA0038.jpg" alt="Image 7" />
+        </div>
+        <div class="gallery-item slide-in-right" onclick="openModal('assets/gallery/IMG-20241104-WA0040.jpg')">
+            <img src="assets/gallery/IMG-20241104-WA0040.jpg" alt="Image 8" />
+        </div>
+        <div class="gallery-item slide-in-top" onclick="openModal('assets/gallery/IMG-20241104-WA0041.jpg')">
+            <img src="assets/gallery/IMG-20241104-WA0041.jpg" alt="Image 9" />
+        </div>
+        <div class="gallery-item slide-in-bottom" onclick="openModal('assets/gallery/IMG-20241104-WA0042.jpg')">
+            <img src="assets/gallery/IMG-20241104-WA0042.jpg" alt="Image 10" />
+        </div>
+        <div class="gallery-item pop" onclick="openModal('assets/gallery/IMG-20241104-WA0044.jpg')">
+            <img src="assets/gallery/IMG-20241104-WA0044.jpg" alt="Image 11" />
+        </div>
+        <div class="gallery-item blur" onclick="openModal('assets/gallery/IMG-20241104-WA0045.jpg')">
+            <img src="assets/gallery/IMG-20241104-WA0045.jpg" alt="Image 12" />
+        </div>
+        <div class="gallery-item slide-in-left" onclick="openModal('assets/gallery/IMG-20241104-WA0046.jpg')">
+            <img src="assets/gallery/IMG-20241104-WA0046.jpg" alt="Image 13" />
+        </div>
+        <div class="gallery-item slide-in-right" onclick="openModal('assets/gallery/IMG-20241104-WA0047.jpg')">
+            <img src="assets/gallery/IMG-20241104-WA0047.jpg" alt="Image 14" />
+        </div>
+        <div class="gallery-item slide-in-top" onclick="openModal('assets/gallery/IMG-20241104-WA0049.jpg')">
+            <img src="assets/gallery/IMG-20241104-WA0049.jpg" alt="Image 15" />
+        </div>
+        <div class="gallery-item slide-in-bottom" onclick="openModal('assets/gallery/IMG-20241104-WA0039.jpg')">
+            <img src="assets/gallery/IMG-20241104-WA0039.jpg" alt="Image 16" />
+        </div>
+        <div class="gallery-item pop" onclick="openModal('assets/gallery/IMG-20241104-WA0043.jpg')">
+            <img src="assets/gallery/IMG-20241104-WA0043.jpg" alt="Image 17" />
+        </div>
+        <div class="gallery-item blur" onclick="openModal('assets/gallery/IMG-20241104-WA0048.jpg')">
+            <img src="assets/gallery/IMG-20241104-WA0048.jpg" alt="Image 18" />
+        </div>
+    </section>
+
+    <div class="modal" id="modal" onclick="closeModal()">
+        <span class="close-modal" onclick="closeModal()">✖</span>
+        <img id="modal-image" src="" alt="Modal Image" />
+    </div>
+
+    <script>
+        function openModal(imageSrc) {
+            document.getElementById('modal-image').src = imageSrc;
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        // Intersection Observer for image animations
+        const galleryItems = document.querySelectorAll('.gallery-item');
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1 // Trigger when 10% of the item is visible
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible'); // Add class to trigger animation
+                    observer.unobserve(entry.target); // Stop observing after it's visible
+                }
+            });
+        }, observerOptions);
+
+        galleryItems.forEach(item => {
+            observer.observe(item);
+        });
+    </script>
+</body>
+</html>

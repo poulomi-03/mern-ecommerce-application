@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Calculator</title>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
+        :root {
+            --primary-color: rgba(17, 19, 23, 0.7); /* Semi-transparent for the glass effect */
+            --secondary-color: #f9ac54;
+            --secondary-color-dark: #d79447;
+            --text-light: #d1d5db;
+            --white: #ffffff;
+            --max-width: 1200px;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .glass-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2rem;
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            position: relative; /* Keep it above the video */
+            z-index: 1; /* Ensure it's above the video */
+        }
+
+        .section__header {
+            margin-bottom: 1rem;
+            font-size: 2.25rem;
+            font-weight: 600;
+        }
+
+        .section__subheader {
+            max-width: 700px;
+            margin: auto;
+            color: var(--text-light);
+        }
+
+        .calculator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 2rem;
+        }
+
+        .calculator input {
+            padding: 1rem;
+            margin: 0.5rem 0;
+            width: 80%;
+            max-width: 300px;
+            border: 1px solid var(--secondary-color);
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: var(--primary-color);
+        }
+
+        .result {
+            margin-top: 1rem;
+            font-size: 1.5rem;
+            color: var(--white);
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            outline: none;
+            border: none;
+            font-size: 1rem;
+            color: var(--white);
+            background-color: var(--secondary-color);
+            border-radius: 40px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin: 1rem 0;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color-dark);
+        }
+        img {
+            max-width: 290px;
+        }
+    </style>
+</head>
+<body>
+    
+    <video class="video-background" autoplay muted loop>
+        <source src="/assets/Untitled video - Made with Clipchamp (3).mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div class="glass-container">
+        <a href="/Home.html"><img src="assets/FitSporzz.png" alt="logo" /></a>
+        <h1 class="section__header">BMI Calculator</h1>
+        <p class="section__subheader">Calculate your Body Mass Index</p>
+        <div class="calculator">
+            <input type="number" id="weight" placeholder="Weight (kg)" required>
+            <input type="number" id="height" placeholder="Height (m)" required>
+            <button class="btn" onclick="calculateBMI()">Calculate BMI</button>
+            <button class="btn" onclick="resetFields()">Reset</button>
+            <div id="result" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        function calculateBMI() {
+            const weight = parseFloat(document.getElementById('weight').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const resultDiv = document.getElementById('result');
+
+            // Input validation
+            if (isNaN(weight) || isNaN(height) || weight <= 0 || height <= 0) {
+                resultDiv.innerHTML = 'Please enter valid weight and height.';
+                return;
+            }
+
+            // Calculate BMI
+            const bmi = (weight / (height * height)).toFixed(2);
+            let classification = '';
+
+            // Determine BMI classification
+            if (bmi < 18.5) {
+                classification = 'Underweight';
+            } else if (bmi >= 18.5 && bmi < 24.9) {
+                classification = 'Normal weight';
+            } else if (bmi >= 25 && bmi < 29.9) {
+                classification = 'Overweight';
+            } else {
+                classification = 'Obesity';
+            }
+
+            // Display result
+            resultDiv.innerHTML = `Your BMI is: <strong>${bmi}</strong><br/>Classification: <strong>${classification}</strong>`;
+        }
+
+        function resetFields() {
+            document.getElementById('weight').value = '';
+            document.getElementById('height').value = '';
+            document.getElementById('result').innerHTML = '';
+        }
+    </script>
+</body>
+</html>

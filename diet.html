@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personalized Diet Plan Generator</title>
+  <style>
+    :root {
+      --primary-color: #111317;
+      --primary-color-light: #1f2125;
+      --secondary-color: #f9ac54;
+      --secondary-color-dark: #d79447;
+      --text-light: #d1d5db;
+      --white: #ffffff;
+      --max-width: 1200px;
+    }
+
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--primary-color);
+      color: var(--white);
+      padding: 2rem;
+    }
+
+    /* Glass effect container */
+    .glass-effect {
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 15px;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      color: var(--white);
+    }
+
+    .diet-plan-section {
+      padding: 5rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .diet-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .diet-form label {
+      font-size: 1rem;
+    }
+
+    .diet-form input,
+    .diet-form select,
+    .diet-form button {
+      padding: 1rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 0.9rem; /* Slightly smaller font size */
+    }
+
+    .diet-form button {
+      background-color: var(--secondary-color);
+      color: var(--white);
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+      width: 200px; /* Reduced width of the generate button */
+      margin: 10px auto; /* Center the button */
+    }
+
+    .diet-form button:hover {
+      background-color: var(--secondary-color-dark);
+    }
+
+    .diet-plan-result {
+      margin-top: 2rem;
+      padding: 2rem;
+      border-radius: 10px;
+      color: var(--white);
+      max-width: 800px;
+      width: 100%;
+    }
+
+    .diet-meals h5 {
+      margin-top: 1rem;
+      font-size: 1.3rem;
+      font-weight: bold;
+    }
+
+    .diet-meals p {
+      margin: 0.5rem 0;
+      font-size: 1rem; /* Slightly smaller font size */
+    }
+
+    .diet-plan-section h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 2rem; /* Slightly smaller font size */
+      font-weight: bold;
+    }
+
+    /* Center the download button */
+    #downloadPdfButton {
+      background-color: var(--secondary-color);
+      color: var(--white);
+      padding: 1rem 2rem;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: 0.3s;
+      display: block;
+      margin-left: auto;
+      margin-right: auto; /* Center button */
+      width: 600px; /* Same width as generate button */
+    }
+
+    #downloadPdfButton:hover {
+      background-color: var(--secondary-color-dark);
+    }
+
+    img {
+            max-width: 290px;
+        }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+
+  <section class="diet-plan-section">
+    <div class="glass-effect">
+        <center>
+        <a href="/Home.html"><img src="assets/mylogoRB.png" alt="logo" /></a></center>
+      <div class="section__header">
+        <h2>Personalized Diet Plan Generator</h2>
+      </div>
+
+      <form id="dietForm" class="diet-form">
+        <label for="height">Height (in cm):</label>
+        <input type="number" id="height" name="height" required>
+
+        <label for="weight">Weight (in kg):</label>
+        <input type="number" id="weight" name="weight" required>
+
+        <label for="age">Age (in years):</label>
+        <input type="number" id="age" name="age" required>
+
+        <label for="workoutHours">Daily Workout Hours:</label>
+        <input type="number" id="workoutHours" name="workoutHours" required>
+
+        <label for="goal">Goal:</label>
+        <select id="goal" name="goal" required>
+          <option value="weightLoss">Weight Loss</option>
+          <option value="weightMaintenance">Maintain Weight</option>
+          <option value="muscleGain">Muscle Gain</option>
+        </select>
+
+        <button type="submit">Generate Diet Plan</button>
+      </form>
+
+      <div id="dietPlanResult" class="diet-plan-result"></div>
+      <button id="downloadPdfButton" style="display:none;">Download PDF</button>
+    </div>
+  </section>
+
+  <script>
+    document.getElementById("dietForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      // Collect form data
+      const height = parseFloat(document.getElementById("height").value);
+      const weight = parseFloat(document.getElementById("weight").value);
+      const age = parseInt(document.getElementById("age").value);
+      const workoutHours = parseFloat(document.getElementById("workoutHours").value);
+      const goal = document.getElementById("goal").value;
+
+      // Calculate Total Daily Energy Expenditure (TDEE)
+      const tdee = (10 * weight + 6.25 * height - 5 * age + 5) * (1.2 + (0.175 * workoutHours)); // Using Mifflin-St Jeor
+
+      // Adjust TDEE based on goal
+      let adjustedTDEE;
+      if (goal === "weightLoss") {
+        adjustedTDEE = tdee - 500; // Calorie deficit
+      } else if (goal === "muscleGain") {
+        adjustedTDEE = tdee + 500; // Calorie surplus
+      } else {
+        adjustedTDEE = tdee; // Maintain weight
+      }
+
+      // Generate Diet Plan
+      const dietPlan = generateDietPlan(adjustedTDEE);
+
+      // Display the result
+      displayDietPlan(goal, dietPlan);
+    });
+
+    // Function to generate a more detailed diet plan based on adjusted TDEE
+    function generateDietPlan(calories) {
+      return {
+        breakfast: {
+          time: "7:00 AM",
+          meal: "Oatmeal with almond butter, chia seeds, and a protein shake",
+          calories: 450,
+          protein: "25g",
+          carbs: "50g",
+          fat: "15g",
+          portionSize: "1 serving"
+        },
+        midMorningSnack: {
+          time: "10:00 AM",
+          meal: "Greek yogurt with blueberries and almonds",
+          calories: 250,
+          protein: "20g",
+          carbs: "15g",
+          fat: "10g",
+          portionSize: "1 cup"
+        },
+        lunch: {
+          time: "12:30 PM",
+          meal: "Grilled chicken breast with quinoa, spinach, and avocado",
+          calories: 550,
+          protein: "40g",
+          carbs: "45g",
+          fat: "25g",
+          portionSize: "1 plate"
+        },
+        afternoonSnack: {
+          time: "3:00 PM",
+          meal: "Cottage cheese with cucumber and carrots",
+          calories: 200,
+          protein: "15g",
+          carbs: "10g",
+          fat: "10g",
+          portionSize: "1 bowl"
+        },
+        dinner: {
+          time: "6:30 PM",
+          meal: "Baked salmon with broccoli, sweet potato, and olive oil",
+          calories: 600,
+          protein: "35g",
+          carbs: "50g",
+          fat: "30g",
+          portionSize: "1 serving"
+        },
+        eveningSnack: {
+          time: "8:00 PM",
+          meal: "Protein bar or a handful of walnuts",
+          calories: 150,
+          protein: "10g",
+          carbs: "10g",
+          fat: "8g",
+          portionSize: "1 bar or handful"
+        },
+        totalCalories: calories.toFixed(0)
+      };
+    }
+
+    // Function to display diet plan
+    function displayDietPlan(goal, dietPlan) {
+      let planHtml = `
+        <h3>Your Goal: ${goal.charAt(0).toUpperCase() + goal.slice(1).replace(/([A-Z])/g, ' $1')}</h3>
+        <h4>Recommended Total Daily Calories: ${dietPlan.totalCalories} kcal</h4>
+        <div class="diet-meals">
+          <h5>Breakfast (${dietPlan.breakfast.time}):</h5>
+          <p>${dietPlan.breakfast.meal} — ${dietPlan.breakfast.calories} kcal</p>
+          <p>Protein: ${dietPlan.breakfast.protein}, Carbs: ${dietPlan.breakfast.carbs}, Fat: ${dietPlan.breakfast.fat}</p>
+          <p>Portion Size: ${dietPlan.breakfast.portionSize}</p>
+
+          <h5>Mid-Morning Snack (${dietPlan.midMorningSnack.time}):</h5>
+          <p>${dietPlan.midMorningSnack.meal} — ${dietPlan.midMorningSnack.calories} kcal</p>
+          <p>Protein: ${dietPlan.midMorningSnack.protein}, Carbs: ${dietPlan.midMorningSnack.carbs}, Fat: ${dietPlan.midMorningSnack.fat}</p>
+          <p>Portion Size: ${dietPlan.midMorningSnack.portionSize}</p>
+
+          <h5>Lunch (${dietPlan.lunch.time}):</h5>
+          <p>${dietPlan.lunch.meal} — ${dietPlan.lunch.calories} kcal</p>
+          <p>Protein: ${dietPlan.lunch.protein}, Carbs: ${dietPlan.lunch.carbs}, Fat: ${dietPlan.lunch.fat}</p>
+          <p>Portion Size: ${dietPlan.lunch.portionSize}</p>
+
+          <h5>Afternoon Snack (${dietPlan.afternoonSnack.time}):</h5>
+          <p>${dietPlan.afternoonSnack.meal} — ${dietPlan.afternoonSnack.calories} kcal</p>
+          <p>Protein: ${dietPlan.afternoonSnack.protein}, Carbs: ${dietPlan.afternoonSnack.carbs}, Fat: ${dietPlan.afternoonSnack.fat}</p>
+          <p>Portion Size: ${dietPlan.afternoonSnack.portionSize}</p>
+
+          <h5>Dinner (${dietPlan.dinner.time}):</h5>
+          <p>${dietPlan.dinner.meal} — ${dietPlan.dinner.calories} kcal</p>
+          <p>Protein: ${dietPlan.dinner.protein}, Carbs: ${dietPlan.dinner.carbs}, Fat: ${dietPlan.dinner.fat}</p>
+          <p>Portion Size: ${dietPlan.dinner.portionSize}</p>
+
+          <h5>Evening Snack (${dietPlan.eveningSnack.time}):</h5>
+          <p>${dietPlan.eveningSnack.meal} — ${dietPlan.eveningSnack.calories} kcal</p>
+          <p>Protein: ${dietPlan.eveningSnack.protein}, Carbs: ${dietPlan.eveningSnack.carbs}, Fat: ${dietPlan.eveningSnack.fat}</p>
+          <p>Portion Size: ${dietPlan.eveningSnack.portionSize}</p>
+        </div>
+      `;
+
+      document.getElementById("dietPlanResult").innerHTML = planHtml;
+
+      // Show the download button
+      document.getElementById("downloadPdfButton").style.display = "inline-block";
+
+      // Attach the download PDF event
+      document.getElementById("downloadPdfButton").addEventListener("click", function() {
+        downloadDietPlanAsPDF(goal, dietPlan);
+      });
+    }
+
+    // Function to download the diet plan as a PDF
+    function downloadDietPlanAsPDF(goal, dietPlan) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      // Add logo/image to PDF (replace with your image URL or file path)
+      const logoUrl = "assets/FitSporzz.png"; // Change this URL to your logo path
+      doc.addImage(logoUrl, "PNG", 20, 10, 50, 50); // x, y, width, height
+
+      doc.setFontSize(18);
+      doc.text(`Personalized Diet Plan for ${goal.charAt(0).toUpperCase() + goal.slice(1)}`, 20, 70);
+
+      doc.setFontSize(12);
+      doc.text(`Total Daily Calories: ${dietPlan.totalCalories} kcal`, 20, 80);
+
+      let yOffset = 90;
+      Object.keys(dietPlan).forEach((mealKey) => {
+        if (mealKey !== "totalCalories") {
+          const meal = dietPlan[mealKey];
+          doc.text(`${mealKey.charAt(0).toUpperCase() + mealKey.slice(1)}: ${meal.time}`, 20, yOffset);
+          doc.text(`${meal.meal} — ${meal.calories} kcal`, 20, yOffset + 10);
+          doc.text(`Protein: ${meal.protein}, Carbs: ${meal.carbs}, Fat: ${meal.fat}`, 20, yOffset + 20);
+          doc.text(`Portion Size: ${meal.portionSize}`, 20, yOffset + 30);
+          yOffset += 40;
+        }
+      });
+
+      doc.save("diet-plan.pdf");
+    }
+  </script>
+
+</body>
+</html>
